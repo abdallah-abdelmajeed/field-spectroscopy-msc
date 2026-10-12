@@ -1,0 +1,6 @@
+{
+  "name": "Principles of Field Spectroscopy",
+  "description": "Comprehensive MSc course platform for field spectroscopy in natural outdoor environments, featuring 8 complete modules with 30+ slide lecture decks, field protocol labs, Python/R code, RTM simulations, quizzes, Google Slides export, and instructor dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

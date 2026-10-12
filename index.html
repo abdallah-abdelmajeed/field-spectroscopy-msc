@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (function() {
+        // Suppress uncaught 'fetch of #<Window> which has only a getter' errors
+        try {
+          window.addEventListener('error', function(e) {
+            if (e && e.message && e.message.indexOf('fetch') !== -1 && e.message.indexOf('getter') !== -1) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              return true;
+            }
+          }, true);
+
+          var origOnError = window.onerror;
+          window.onerror = function(msg, url, line, col, error) {
+            if (typeof msg === 'string' && msg.indexOf('fetch') !== -1 && msg.indexOf('getter') !== -1) {
+              return true;
+            }
+            if (origOnError) {
+              return origOnError.apply(this, arguments);
+            }
+          };
+        } catch (err) {}
+
+        // Make window.fetch writable and configurable across prototype chain
+        try {
+          var currentFetch = window.fetch || (typeof globalThis !== 'undefined' ? globalThis.fetch : null);
+          if (currentFetch) {
+            var proto = window;
+            while (proto) {
+              try {
+                var desc = Object.getOwnPropertyDescriptor(proto, 'fetch');
+                if (desc) {
+                  Object.defineProperty(proto, 'fetch', {
+                    get: function() { return currentFetch; },
+                    set: function(val) { currentFetch = val; },
+                    configurable: true,
+                    enumerable: true
+                  });
+                }
+              } catch (eDesc) {}
+              proto = Object.getPrototypeOf(proto);
+            }
+
+            try {
+              Object.defineProperty(window, 'fetch', {
+                get: function() { return currentFetch; },
+                set: function(val) { currentFetch = val; },
+                configurable: true,
+                enumerable: true
+              });
+            } catch (eWin) {}
+
+            try {
+              if (typeof Window !== 'undefined' && Window.prototype) {
+                Object.defineProperty(Window.prototype, 'fetch', {
+                  get: function() { return currentFetch; },
+                  set: function(val) { currentFetch = val; },
+                  configurable: true,
+                  enumerable: true
+                });
+              }
+            } catch (eProto) {}
+
+            try {
+              if (typeof globalThis !== 'undefined' && globalThis !== window) {
+                Object.defineProperty(globalThis, 'fetch', {
+                  get: function() { return currentFetch; },
+                  set: function(val) { currentFetch = val; },
+                  configurable: true,
+                  enumerable: true
+                });
+              }
+            } catch (eGlobal) {}
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Principles of Field Spectroscopy - MSc Course &amp; Laboratory</title>
+    <meta name="description" content="Comprehensive MSc course platform for field spectroscopy in natural outdoor environments, featuring 8 complete modules with 30+ slide lecture decks, field protocol labs, Python/R code, RTM simulations, quizzes, Google Slides export, and instructor dashboard." />
+    <meta property="og:title" content="Principles of Field Spectroscopy - MSc Course &amp; Laboratory" />
+    <meta property="og:description" content="Comprehensive MSc course platform for field spectroscopy in natural outdoor environments, featuring 8 complete modules with 30+ slide lecture decks, field protocol labs, Python/R code, RTM simulations, quizzes, Google Slides export, and instructor dashboard." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0WIMao0TNhmGV3pn3vST20faoOYew28ceRJ6YcUMnu/lount++59gHYzPrv3h/" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
